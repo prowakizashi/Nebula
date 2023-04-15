@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="NebulaLauncher.Views.Widgets.GameApp"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NebulaLauncher.Views.Widgets"
+             mc:Ignorable="d" 
+             d:DesignHeight="230" d:DesignWidth="150" Background="#01010101">
+
+    <UserControl.Resources>
+        <Storyboard x:Key="OverAnimation">
+            <DoubleAnimation Storyboard.TargetName="AppIconButton" Storyboard.TargetProperty="Height" To="200" Duration="0:0:0.1" />
+            <DoubleAnimation Storyboard.TargetName="AppIconButton" Storyboard.TargetProperty="Width" To="150" Duration="0:0:0.1" />
+            <ColorAnimation Storyboard.TargetName="AppIconTitle" Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)" To="White" Duration="0:0:0.1" />
+        </Storyboard>
+        <Storyboard x:Key="UnoverAnimation">
+            <DoubleAnimation Storyboard.TargetName="AppIconButton" Storyboard.TargetProperty="Height" To="190" Duration="0:0:0.1" />
+            <DoubleAnimation Storyboard.TargetName="AppIconButton" Storyboard.TargetProperty="Width" To="140" Duration="0:0:0.1" />
+            <ColorAnimation Storyboard.TargetName="AppIconTitle" Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)" To="#BBBBBB" Duration="0:0:0.1" />
+        </Storyboard>
+    </UserControl.Resources>
+    
+    <Grid Height="230" Width="150" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="AppIconButton" Height="190" Width="140">
+            <Grid>
+                <Image Source="{Binding IconPath}" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill"/>
+                <Rectangle Visibility="{Binding InstallVisibility}" Fill="#B0000000"/>
+                <Grid Visibility="{Binding PhaseVisibility}" Height="190" Width="140">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" HorizontalAlignment="Center" BorderThickness="0" Foreground="white" Background="Transparent" Text="{Binding InstallStep}" FontSize="15" Margin="0 0 0 10"/>
+                        <TextBox Grid.Row="1" HorizontalAlignment="Center" BorderThickness="0" Foreground="white" Background="Transparent" Text="{Binding DownloadPercent}" FontSize="30" Visibility="{Binding DownloadVisibility}" Margin="0 0 0 10" />
+                        <TextBox Grid.Row="2" HorizontalAlignment="Center" BorderThickness="0" Foreground="white" Background="Transparent" Text="{Binding DownloadSize}" FontSize="10" Visibility="{Binding DownloadVisibility}" />
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Button.ContextMenu>
+                <ContextMenu Name="AppMenu" Style="{StaticResource AppContextMenu}" Placement="MousePoint" HorizontalOffset="{Binding ActualWidth, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Style="{StaticResource AppMenuItemStyle}" Visibility="{Binding InstallVisibility}" Header="Installer" Command="{Binding InstallCommand}" />
+                    <MenuItem Style="{StaticResource AppMenuItemStyle}" Visibility="{Binding PlayVisibility}" Header="Jouer" Command="{Binding PlayCommand}" />
+                    <MenuItem Style="{StaticResource AppMenuItemStyle}" Visibility="{Binding PlayVisibility}" Header="Mettre à jour" Command="{Binding InstallCommand}" />
+                    <Separator Style="{StaticResource AppMenuSeparatorStyle}" Visibility="{Binding PlayVisibility}" />
+                    <MenuItem Style="{StaticResource AppMenuItemStyle}" Visibility="{Binding PlayVisibility}" Header="Désinstaller" Command="{Binding UninstallCommand}"/>
+                </ContextMenu>
+            </Button.ContextMenu>
+        </Button>
+        <TextBlock Grid.Row="1" x:Name="AppIconTitle" Text="{Binding GameData.GameName}" Foreground="#BBBBBB" HorizontalAlignment="Left"/>
+    </Grid>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="UserControl.MouseEnter">
+            <BeginStoryboard  Storyboard="{StaticResource OverAnimation}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="UserControl.MouseLeave">
+            <BeginStoryboard  Storyboard="{StaticResource UnoverAnimation}"/>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+</UserControl>
